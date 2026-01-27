@@ -7,6 +7,11 @@
 
     sops-nix.url = "github:Mic92/sops-nix";
 
+    sync = {
+      url = "github:PorcoRosso85/flakes?dir=sync";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     nixos-wsl = {
       url = "github:nix-community/NixOS-WSL";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -26,6 +31,7 @@
       sops-nix,
       nixos-wsl,
       home-manager,
+      sync,
     }:
     let
       system = "x86_64-linux";
@@ -38,6 +44,7 @@
             ./os/rent-wsl/default.nix
             ./os/common.nix
             ./os/secrets.nix
+            sync.nixosModules.default
             sops-nix.nixosModules.sops
             nixos-wsl.nixosModules.wsl
             home-manager.nixosModules.home-manager
@@ -48,6 +55,25 @@
               { lib, ... }:
               {
                 _module.args.self = lib.mkDefault self;
+              }
+            )
+          ];
+        };
+
+        nixos-vm = nixpkgs.lib.nixosSystem {
+          inherit system;
+          modules = [
+            ./os/nixos-vm/default.nix
+            ./os/common.nix
+            ./os/secrets.nix
+            sync.nixosModules.default
+            sops-nix.nixosModules.sops
+
+            # Only for evaluation/CI: keep flake check green without requiring bootloader settings.
+            (
+              { lib, ... }:
+              {
+                boot.loader.grub.enable = lib.mkDefault false;
               }
             )
           ];
