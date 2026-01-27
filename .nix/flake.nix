@@ -35,9 +35,9 @@
         rent-wsl = nixpkgs.lib.nixosSystem {
           inherit system;
           modules = [
-            ./os/hosts/rent-wsl/default.nix
-            ./os/modules/common.nix
-            ./os/modules/secrets.nix
+            ./os/rent-wsl/default.nix
+            ./os/common.nix
+            ./os/secrets.nix
             sops-nix.nixosModules.sops
             nixos-wsl.nixosModules.wsl
             home-manager.nixosModules.home-manager

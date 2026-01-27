@@ -30,7 +30,7 @@
     helix
     curl
     openssl
-    tar
+    gnutar
     gzip
     unzip
   ];
