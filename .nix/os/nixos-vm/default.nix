@@ -17,6 +17,6 @@
     folderPath = "/home/nixos/.syncthing";
 
     # Fill this with the actual Windows Syncthing Device ID.
-    windowsDeviceId = "DUMMY-DEVICE-ID";
+    windowsDeviceId = "V437FTY-KXSHFX4-56KFXAC-LYJWQTP-ZJLHNLK-LW45GF4-SL36OP3-ION5TA5";
   };
 }

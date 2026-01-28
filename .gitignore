@@ -71,6 +71,8 @@
 
 !.os
 !.os/**/*
+!.nix
+!.nix/**/*
 !bin
 !bin/**
 bin/src/.venv/
