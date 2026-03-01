@@ -1,28 +1,28 @@
 ## Repos / Responsibilities
 この構成は「SSOT（remote）+ 端末ごとのglue（local wrapper）」を前提にしています。
-- `PorcoRosso85/flakes`
+- `roccho-dev/flakes`
   - 単一責務のflake（tool bundle / dev tooling / editor tooling 等）を積み上げる場所
   - 「どこでも使える部品」を提供する（= 再利用しやすい小さな成果物）
-- `PorcoRosso85/home`
+- `roccho-dev/home`
   - OS層（NixOS）と user層（Home Manager）の “昇格済み” 基盤（foundation）
   - 「安定して常用する設定」を集約し、各端末で再利用できる形で提供する
   - 端末側はこのrepoを *編集しない*（SSOT）
 - 各端末（per-machine）
-  - `PorcoRosso85/home` を input として参照し、`extendModules` / overlays で “glue” を足す
+  - `roccho-dev/home` を input として参照し、`extendModules` / overlays で “glue” を足す
   - 端末固有の差分（EDITOR、追加パッケージ、微調整）をここに閉じ込める
  Mental Model (SSOT + Glue)
-- SSOT は常に remote の `PorcoRosso85/home`
+- SSOT は常に remote の `roccho-dev/home`
 - 端末は **local wrapper flake** を1つ用意して、remoteを “wrap” する
 - OSもuserも「moduleを合成して適用」という同一モデルで扱う
 - 適用コマンドはOSとuserで別（`nixos-rebuild` と `home-manager`）にして世代管理/rollbackを任せる
  Entrypoints (Remote direct)
  OS (NixOS)
-- `sudo nixos-rebuild switch --flake github:PorcoRosso85/home?dir=.os#y-wsl`
-- `sudo nixos-rebuild switch --flake github:PorcoRosso85/home?dir=.os#nixos-vm`
+- `sudo nixos-rebuild switch --flake github:roccho-dev/home?dir=.os#y-wsl`
+- `sudo nixos-rebuild switch --flake github:roccho-dev/home?dir=.os#nixos-vm`
  User (Home Manager)
-- `home-manager switch --flake github:PorcoRosso85/home?dir=.config/nix#nixos`
+- `home-manager switch --flake github:roccho-dev/home?dir=.config/nix#nixos`
 home-managerコマンドが無い場合（ブートストラップ）:
-- `nix run nixpkgs#home-manager -- switch --flake github:PorcoRosso85/home?dir=.config/nix#nixos`
+- `nix run nixpkgs#home-manager -- switch --flake github:roccho-dev/home?dir=.config/nix#nixos`
 
 ## Recommended: Per-machine wrapper (~/.nix)
 端末固有の差分は `~/.nix` に閉じ込める（このrepoはSSOTとして参照のみ）。
@@ -40,9 +40,9 @@ home-managerコマンドが無い場合（ブートストラップ）:
 ```
 
 `flake.nix` のイメージ:
-- inputs: `os = github:PorcoRosso85/home?dir=.os`
-- inputs: `home = github:PorcoRosso85/home?dir=.config/nix`
-- 必要なら inputs: `tooling = github:PorcoRosso85/flakes`（tool bundle再利用）
+- inputs: `os = github:roccho-dev/home?dir=.os`
+- inputs: `home = github:roccho-dev/home?dir=.config/nix`
+- 必要なら inputs: `tooling = github:roccho-dev/flakes`（tool bundle再利用）
 出力:
 - `nixosConfigurations = mapAttrs (_: cfg: cfg.extendModules { modules = [ ... ]; }) os.nixosConfigurations;`
 - `homeConfigurations  = mapAttrs (_: cfg: cfg.extendModules { modules = [ ... ]; }) home.homeConfigurations;`
